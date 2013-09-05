@@ -2,12 +2,14 @@ package adept.core.models
 
 import java.io.File
 import java.net.URL
+
+import scala.concurrent.Await
+import scala.concurrent.duration.FiniteDuration
+
 import adept.download.Downloader
-import akka.util.FiniteDuration
-import akka.actor._
 import adept.download.ProgressIndicator
 import adept.utils.Logging
-import akka.dispatch.Await
+import akka.actor._
 
 case class Artifact(hash: Hash, artifactType: String, configurations: Set[String], locations: Set[String])
 
@@ -53,6 +55,7 @@ object Artifact extends Logging {
   def fromUrl(url: URL, artifactType: String, configurations: Set[String], extraLocations: Set[String] = Set.empty)(timeout: FiniteDuration) = {
     val file = File.createTempFile("adept-artifact", "." + artifactType)
     val system = ActorSystem("adept-artifact-download")
+    import system.dispatcher
     val progressActor = system.actorOf(Props[ProgressIndicator])
     val future = Downloader.downloadOne(url, file, None)(timeout, system).map {
       case Right(file) =>

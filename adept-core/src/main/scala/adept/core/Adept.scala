@@ -5,12 +5,12 @@ import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.errors.TransportException
 import adept.core.operations._
 import adept.core.models._
-import akka.util.FiniteDuration
 import adept.utils._
 import org.eclipse.jgit.lib.{ Tree => GitTree, _ }
 import org.eclipse.jgit.transport._
 import com.jcraft.jsch.JSch
 import akka.actor.ActorRef
+import scala.concurrent.duration.FiniteDuration
 
 object Adept extends Logging {
   val AritifactPath = "artifacts"

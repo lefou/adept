@@ -10,18 +10,16 @@ import akka.util.Timeout
 import java.net.URL
 import scala.util._
 import java.io.File
-import akka.util.duration._
 import akka.actor.{Props, ActorSystem}
 import akka.pattern.ask
 import akka.util.Timeout
 import spray.http._
 import spray.util._
 import java.io._
-import akka.dispatch.Future
+import scala.concurrent.Future
 import adept.utils.Logging
-import akka.util.duration._
-import akka.dispatch.Await
-import akka.util.FiniteDuration
+import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.Await
 import java.net.URLConnection
 
 private[adept] case class DownloadFile(url: URL, file: File)
@@ -78,7 +76,7 @@ private[adept] object Downloader extends Logging {
       logger.trace("downloading "+downloadbles.size+" modules...")
       
       val system = ActorSystem("adept-download")
-      implicit val executionContext = akka.dispatch.ExecutionContext.defaultExecutionContext(system)
+      import system.dispatcher
       val progressIndicator = maybeProgress match {
         case Some(progress) => progress
         case None => system.actorOf(Props[ProgressIndicator])
