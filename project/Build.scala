@@ -5,7 +5,8 @@ import sbtrelease.ReleasePlugin._
 object AdeptBuild extends Build {
 
   val commonSettings = Seq(
-    scalaVersion := "2.9.2",
+    sourcesInBase := false,
+    scalaVersion := "2.10.2",
     organization := "org.adept",
     version := {
       val format = new java.text.SimpleDateFormat("yyyyMMddHHmmss")
