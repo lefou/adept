@@ -11,15 +11,19 @@ class SBuild(implicit _project: Project) {
   val namespace = "adept-core"
   val adept = new Adept()
 
+  adept.schemeHandler
   adept.clean()
-  adept.compile()
+  adept.compile(compileCp = adept.coreDeps)
   val pack = adept.pack(name = namespace)
-  adept.repl()
+  adept.repl(classpath = adept.coreDeps ~ pack.jar)
 
-  Target("phony:compileCp") dependsOn adept.coreDeps
-  
-  ExportDependencies("eclipse.classpath", "compileCp")
+  ExportDependencies("eclipse.classpath", adept.coreDeps)
 
-  Target("phony:runtimeCp") dependsOn "compileCp" ~ pack.jar
+  // val adept29 = new Adept() with WithScala29
+  // adept29.clean()
+  // adept29.compile(compileCp = adept29.coreDeps)
+  // val pack29 = adept29.pack(name = namespace)
+  // adept29.repl(classpath = adept29.coreDeps ~ pack29.jar)
+
 
 }

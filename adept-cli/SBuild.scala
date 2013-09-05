@@ -11,15 +11,14 @@ class SBuild(implicit _project: Project) {
   val namespace = "adept-cli"
   val adept = new Adept()
 
-  Target("phony:compileCp") dependsOn adept.cliDeps
-
+  adept.schemeHandler
   adept.clean()
-  adept.compile()
-  adept.pack(name = namespace)
+  adept.compile(compileCp = adept.cliDeps)
+  val pack = adept.pack(name = namespace)
 
-  Target("phony:runCli") dependsOn "jar" ~ "compileCp" exec {
+  Target("phony:runCli-" + adept.scalaBinVersion) dependsOn pack.jar ~ adept.cliDeps exec {
     addons.support.ForkSupport.runJavaAndWait(
-      classpath = "compileCp".files ++ "jar".files,
+      classpath = adept.cliDeps.files ++ pack.jar.files,
       arguments = Array("adept.cli.Main") ++ Prop("adeptArgs").split(" "),
       interactive = true)
   }
