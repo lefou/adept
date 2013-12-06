@@ -30,3 +30,6 @@ bin/adept
 # Gradle specific:
 .gradle
 build
+
+# SBuild specific:
+.sbuild
